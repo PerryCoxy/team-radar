@@ -1,5 +1,5 @@
-import type { BacklogResponse, TeamStats, DeveloperStats, ParentDto } from "../types"
-import backlogData from "../data/backlog_mock.json"
+import backlogData from "../data/backlog_mock.json";
+import type { BacklogResponse, DeveloperStats, ParentDto, TeamStats } from "../types";
 
 export const processBacklogData = (data: BacklogResponse) => {
   const teamStats: TeamStats[] = []

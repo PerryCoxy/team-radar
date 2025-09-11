@@ -1,15 +1,22 @@
-import { Routes, Route } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { Sidebar } from "./components/Sidebar"
-import { Dashboard } from "./pages/Dashboard"
-import { TeamDetail } from "./pages/TeamDetail"
-import { DeveloperDetail } from "./pages/DeveloperDetail"
+import { useBacklog } from './hooks/useBacklog'
 import { CrossTaskDetail } from "./pages/CrossTaskDetail"
+import { Dashboard } from "./pages/Dashboard"
+import { DeveloperDetail } from "./pages/DeveloperDetail"
 import { NoTeamDetail } from "./pages/NoTeamDetail"
-import { Settings } from "./pages/Settings"
 import { Reports } from "./pages/Reports"
 import { Search } from "./pages/Search"
+import { Settings } from "./pages/Settings"
+import { TeamDetail } from "./pages/TeamDetail"
 
 function App() {
+
+  const { isLoading, error } = useBacklog();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading backlog</div>;
+  
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar Navigation */}
