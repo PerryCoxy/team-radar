@@ -66,7 +66,7 @@ export const NoTeamDetail: React.FC = () => {
         </h2>
         <div className="space-y-3">
           {noTeamTasks.map((task) => (
-            <Card key={task.id} className="border-destructive/20">
+            <Card key={task.id} className="border-enhanced card-gradient">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
@@ -76,7 +76,7 @@ export const NoTeamDetail: React.FC = () => {
                       <span>Команда: {task.team}</span>
                     </div>
                   </div>
-                  <Badge variant="destructive">Без команды</Badge>
+                  <Badge variant="destructive" className="badge-enhanced">Без команды</Badge>
                 </div>
               </CardContent>
             </Card>

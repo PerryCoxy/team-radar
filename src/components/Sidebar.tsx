@@ -1,7 +1,8 @@
+import { FileText, Home, Search, Settings, Users } from "lucide-react"
 import type React from "react"
 import { Link, useLocation } from "react-router-dom"
 import { cn } from "../lib/utils"
-import { Home, Settings, FileText, Search, Users } from "lucide-react"
+import { SprintSelector } from "./SprintSelector"
 
 interface SidebarProps {
   className?: string
@@ -69,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       {/* Footer */}
       <div className="border-t border-border/50 p-4 bg-gradient-to-r from-muted/20 to-transparent">
-        <div className="text-xs text-muted-foreground">Спринт #66</div>
+        <SprintSelector />
       </div>
     </div>
   )

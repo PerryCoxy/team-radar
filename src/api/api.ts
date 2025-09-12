@@ -5,7 +5,7 @@ export const api = axios.create({
   baseURL: "http://localhost:3000",
 });
 
-export const fetchBacklog = async (): Promise<BacklogResponse> => {
-  const res = await api.get("/backlog?sprint=66");
+export const fetchBacklog = async (sprint: number): Promise<BacklogResponse> => {
+  const res = await api.get(`/backlog?sprint=${sprint}`);
   return res.data;
 };

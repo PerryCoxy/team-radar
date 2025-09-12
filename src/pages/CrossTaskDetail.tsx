@@ -79,7 +79,7 @@ export const CrossTaskDetail: React.FC = () => {
         </h2>
         <div className="space-y-3">
           {crossTeamTasks.map((task) => (
-            <Card key={task.taskId} className="border-primary/20">
+            <Card key={task.taskId} className="border-enhanced card-gradient">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
@@ -94,14 +94,14 @@ export const CrossTaskDetail: React.FC = () => {
                   <div className="flex flex-col gap-2">
                     <Badge
                       variant="outline"
-                      className="cursor-pointer"
+                      className="cursor-pointer badge-enhanced"
                       onClick={() => navigate(`/developer/${encodeURIComponent(task.developer)}`)}
                     >
                       {task.developer}
                     </Badge>
                     <Badge
                       variant="secondary"
-                      className="cursor-pointer"
+                      className="cursor-pointer badge-enhanced"
                       onClick={() => navigate(`/team/${encodeURIComponent(task.parentTeam)}`)}
                     >
                       {task.parentTeam}

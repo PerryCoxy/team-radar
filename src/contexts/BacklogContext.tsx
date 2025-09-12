@@ -1,12 +1,14 @@
 import React, { createContext, ReactNode, useContext } from 'react'
 import { useBacklog } from '../hooks/useBacklog'
 import { BacklogResponse } from '../types'
+import { useSprint } from './SprintContext'
 
 interface BacklogContextType {
   data: BacklogResponse | undefined
   isLoading: boolean
   error: Error | null
   refetch: () => void
+  selectedSprint: number
 }
 
 const BacklogContext = createContext<BacklogContextType | undefined>(undefined)
@@ -16,13 +18,15 @@ interface BacklogProviderProps {
 }
 
 export const BacklogProvider: React.FC<BacklogProviderProps> = ({ children }) => {
-  const { data, isLoading, error, refetch } = useBacklog()
+  const { selectedSprint } = useSprint()
+  const { data, isLoading, error, refetch } = useBacklog(selectedSprint)
 
   const value: BacklogContextType = {
     data,
     isLoading,
     error,
-    refetch
+    refetch,
+    selectedSprint
   }
 
   return (

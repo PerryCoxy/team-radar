@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchBacklog } from '../api/api';
 
-export const useBacklog = () => {
+export const useBacklog = (sprint: number) => {
   return useQuery({
-    queryKey: ["backlog"],
+    queryKey: ["backlog", sprint],
     queryFn: async () => {
-      const data = await fetchBacklog();
+      const data = await fetchBacklog(sprint);
       return data;
     },
     staleTime: 0,   // данные считаются устаревшими сразу

@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import { Sidebar } from "./components/Sidebar"
 import { BacklogProvider, useBacklogData } from './contexts/BacklogContext'
+import { SprintProvider } from './contexts/SprintContext'
 import { CrossTaskDetail } from "./pages/CrossTaskDetail"
 import { Dashboard } from "./pages/Dashboard"
 import { DeveloperDetail } from "./pages/DeveloperDetail"
@@ -40,9 +41,11 @@ function AppContent() {
 
 function App() {
   return (
-    <BacklogProvider>
-      <AppContent />
-    </BacklogProvider>
+    <SprintProvider>
+      <BacklogProvider>
+        <AppContent />
+      </BacklogProvider>
+    </SprintProvider>
   )
 }
 

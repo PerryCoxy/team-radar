@@ -2,13 +2,13 @@ import { BarChart3, Clock, Target, Users } from "lucide-react"
 import type React from "react"
 import { CrossTaskCard } from "../components/CrossTaskCard"
 import { NoTeamCard } from "../components/NoTeamCard"
+import { StatCard } from "../components/StatCard"
 import { TeamCard } from "../components/TeamCard"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasks, getNoTeamTasks } from "../utils/backlogUtils"
 
 export const Dashboard: React.FC = () => {
-  const { data, isLoading, error } = useBacklogData()
+  const { data, isLoading, error, selectedSprint } = useBacklogData()
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
@@ -32,50 +32,31 @@ export const Dashboard: React.FC = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Дашборд загрузки команд</h1>
-        <p className="text-muted-foreground">Обзор загрузки сотрудников по командам - Спринт #66</p>
+        <p className="text-muted-foreground">Обзор загрузки сотрудников по командам - Спринт #{selectedSprint}</p>
       </div>
 
       {/* Overall Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Всего задач</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{totalTasks}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Общий размер</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{totalSize}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Затрачено времени</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{totalTimeTracking.toFixed(1)}ч</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Средняя перегрузка</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{Math.round(averageOverload)}%</div>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Всего задач"
+          value={totalTasks}
+          icon={Target}
+        />
+        <StatCard
+          title="Общий размер"
+          value={totalSize}
+          icon={BarChart3}
+        />
+        <StatCard
+          title="Затрачено времени"
+          value={`${totalTimeTracking.toFixed(1)}ч`}
+          icon={Clock}
+        />
+        <StatCard
+          title="Средняя перегрузка"
+          value={`${Math.round(averageOverload)}%`}
+          icon={Users}
+        />
       </div>
 
       {/* Team Cards Grid */}
