@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import { Sidebar } from "./components/Sidebar"
-import { useBacklog } from './hooks/useBacklog'
+import { BacklogProvider, useBacklogData } from './contexts/BacklogContext'
 import { CrossTaskDetail } from "./pages/CrossTaskDetail"
 import { Dashboard } from "./pages/Dashboard"
 import { DeveloperDetail } from "./pages/DeveloperDetail"
@@ -10,9 +10,8 @@ import { Search } from "./pages/Search"
 import { Settings } from "./pages/Settings"
 import { TeamDetail } from "./pages/TeamDetail"
 
-function App() {
-
-  const { isLoading, error } = useBacklog();
+function AppContent() {
+  const { isLoading, error } = useBacklogData();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading backlog</div>;
@@ -36,6 +35,14 @@ function App() {
         </Routes>
       </main>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BacklogProvider>
+      <AppContent />
+    </BacklogProvider>
   )
 }
 

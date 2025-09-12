@@ -1,33 +1,38 @@
 "use client"
 
 // Team detail page showing developers and their workload
+import { ArrowLeft, Clock, Target, TrendingUp, Users } from "lucide-react"
 import type React from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Users, Target, Clock, TrendingUp } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
+import { useNavigate, useParams } from "react-router-dom"
 import { DeveloperCard } from "../components/DeveloperCard"
-import { getTeamByName, getProcessedData } from "../utils/dataProcessor"
+import { Badge } from "../components/ui/badge"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { useBacklogData } from "../contexts/BacklogContext"
 
 export const TeamDetail: React.FC = () => {
   const { teamName } = useParams<{ teamName: string }>()
   const navigate = useNavigate()
-  const { developerStats } = getProcessedData()
+  const { data, isLoading, error } = useBacklogData()
+  
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data) return <div>No data available</div>
 
   if (!teamName) {
     return <div>Команда не найдена</div>
   }
 
   const decodedTeamName = decodeURIComponent(teamName)
-  const team = getTeamByName(decodedTeamName)
-
+  
+  // Найти команду в готовых данных
+  const team = data.teamStats.find(t => t.name === decodedTeamName)
   if (!team) {
     return <div>Команда не найдена</div>
   }
 
-  // Get developers for this team
-  const teamDevelopers = developerStats.filter((dev) => dev.team === decodedTeamName)
+  // Найти разработчиков команды в готовых данных
+  const teamDevelopers = data.developerStats.filter((dev) => dev.team === decodedTeamName)
 
   const getOverloadVariant = (indicator: number) => {
     if (indicator <= 50) return "secondary"

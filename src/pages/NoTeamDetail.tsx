@@ -1,17 +1,24 @@
 "use client"
 
 // No team tasks detail page
+import { AlertTriangle, ArrowLeft, FileX } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, AlertTriangle, FileX } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
-import { getProcessedData } from "../utils/dataProcessor"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { useBacklogData } from "../contexts/BacklogContext"
+import { getNoTeamTasks } from "../utils/backlogUtils"
 
 export const NoTeamDetail: React.FC = () => {
   const navigate = useNavigate()
-  const { noTeamTasks } = getProcessedData()
+  const { data, isLoading, error } = useBacklogData()
+  
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data) return <div>No data available</div>
+  
+  const noTeamTasks = getNoTeamTasks(data)
 
   return (
     <div className="p-6 space-y-6">

@@ -1,30 +1,38 @@
 "use client"
 
 // Developer detail page showing individual tasks and workload
+import { ArrowLeft, Clock, Target, TrendingUp, User } from "lucide-react"
 import type React from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, User, Target, Clock, TrendingUp } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Button } from "../components/ui/button"
+import { useNavigate, useParams } from "react-router-dom"
 import { Badge } from "../components/ui/badge"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
-import { getDeveloperByName, getCrossTeamTasksByDeveloper } from "../utils/dataProcessor"
+import { useBacklogData } from "../contexts/BacklogContext"
+import { getCrossTeamTasksByDeveloper } from "../utils/backlogUtils"
 
 export const DeveloperDetail: React.FC = () => {
   const { developerName } = useParams<{ developerName: string }>()
   const navigate = useNavigate()
+  const { data, isLoading, error } = useBacklogData()
+  
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data) return <div>No data available</div>
 
   if (!developerName) {
     return <div>Разработчик не найден</div>
   }
 
   const decodedDeveloperName = decodeURIComponent(developerName)
-  const developer = getDeveloperByName(decodedDeveloperName)
-  const crossTeamTasks = getCrossTeamTasksByDeveloper(decodedDeveloperName)
-
+  
+  // Найти разработчика в готовых данных
+  const developer = data.developerStats.find(d => d.name === decodedDeveloperName)
   if (!developer) {
     return <div>Разработчик не найден</div>
   }
+  
+  const crossTeamTasks = getCrossTeamTasksByDeveloper(data, decodedDeveloperName)
 
   const getOverloadVariant = (indicator: number) => {
     if (indicator <= 50) return "secondary"

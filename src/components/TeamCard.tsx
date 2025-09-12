@@ -1,13 +1,13 @@
 "use client"
 
 // Team card component displaying team statistics and workload
+import { Clock, Target, TrendingUp } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
+import { TeamStats } from "../types"
+import { Badge } from "./ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Progress } from "./ui/progress"
-import { Badge } from "./ui/badge"
-import type { TeamStats } from "../types"
-import { Clock, Target, TrendingUp } from "lucide-react"
 
 interface TeamCardProps {
   team: TeamStats

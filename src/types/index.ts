@@ -1,9 +1,11 @@
+// Базовые типы для участников команды
 export interface Member {
   id: number
   uid: string
   full_name: string
 }
 
+// Тип для задач (подзадач)
 export interface TaskDto {
   id: number
   title: string
@@ -12,6 +14,7 @@ export interface TaskDto {
   members: Member[]
 }
 
+// Тип для родительских задач (Epic/Story)
 export interface ParentDto {
   id: number
   title: string
@@ -19,6 +22,14 @@ export interface ParentDto {
   tasks?: TaskDto[]
 }
 
+// Тип для задач без команды
+export interface NoTeamTask {
+  id: number
+  title: string
+  team: string
+}
+
+// Тип для кросс-командных задач
 export interface CrossTeamTaskDto {
   developer: string
   developerTeam: string
@@ -29,28 +40,28 @@ export interface CrossTeamTaskDto {
   parentTeam: string
 }
 
-export interface NoTeamTask {
-  id: number
-  title: string
-  team: string
+// Типы для категорий задач в команде
+export interface TeamTasks {
+  EN: ParentDto[]
+  US: ParentDto[]
+  BUG: ParentDto[]
 }
 
+// Основной ответ от API бэклога
 export interface BacklogResponse {
   sprint_id: number
   groups: {
-    teams: Record<
-      string,
-      {
-        EN: ParentDto[]
-        US: ParentDto[]
-      }
-    >
+    teams: Record<string, TeamTasks>
     NO_TEAM: NoTeamTask[]
     CROSS_TEAM: CrossTeamTaskDto[]
   }
+  // Готовая статистика команд
+  teamStats: TeamStats[]
+  // Готовая статистика разработчиков
+  developerStats: DeveloperStats[]
 }
 
-// Processed data types for UI
+// Обработанные данные для UI - статистика команды
 export interface TeamStats {
   name: string
   taskCount: number
@@ -58,8 +69,13 @@ export interface TeamStats {
   totalTimeTracking: number
   overloadIndicator: number // percentage
   tasks: ParentDto[]
+  // Разбивка по категориям
+  enTasks: ParentDto[]
+  usTasks: ParentDto[]
+  bugTasks: ParentDto[]
 }
 
+// Обработанные данные для UI - статистика разработчика
 export interface DeveloperStats {
   name: string
   team: string
@@ -68,4 +84,72 @@ export interface DeveloperStats {
   totalTimeTracking: number
   overloadIndicator: number
   tasks: TaskDto[]
+}
+
+// Типы для фильтрации и поиска
+export interface TaskFilter {
+  team?: string
+  category?: 'EN' | 'US' | 'BUG'
+  developer?: string
+  minSize?: number
+  maxSize?: number
+  hasTimeTracking?: boolean
+}
+
+// Типы для сортировки
+export type SortField = 'title' | 'size' | 'time_tracking' | 'taskCount'
+export type SortDirection = 'asc' | 'desc'
+
+export interface SortConfig {
+  field: SortField
+  direction: SortDirection
+}
+
+// Типы для аналитики
+export interface TeamAnalytics {
+  teamName: string
+  totalTasks: number
+  totalSize: number
+  totalTimeTracking: number
+  averageTaskSize: number
+  averageTimeTracking: number
+  completionRate: number
+  overloadedDevelopers: string[]
+}
+
+// Типы для экспорта данных
+export interface ExportData {
+  teams: TeamStats[]
+  developers: DeveloperStats[]
+  crossTeamTasks: CrossTeamTaskDto[]
+  noTeamTasks: NoTeamTask[]
+  sprintId: number
+  exportDate: string
+}
+
+// Типы для API запросов
+export interface BacklogRequest {
+  sprintId?: number
+  team?: string
+  includeCompleted?: boolean
+}
+
+// Типы для уведомлений и алертов
+export interface Alert {
+  id: string
+  type: 'warning' | 'error' | 'info' | 'success'
+  message: string
+  timestamp: Date
+  team?: string
+  developer?: string
+}
+
+// Типы для настроек приложения
+export interface AppSettings {
+  theme: 'light' | 'dark'
+  defaultView: 'teams' | 'developers' | 'cross-team'
+  autoRefresh: boolean
+  refreshInterval: number
+  showCompletedTasks: boolean
+  groupBy: 'team' | 'category' | 'developer'
 }

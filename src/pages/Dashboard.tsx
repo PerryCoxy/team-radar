@@ -1,20 +1,31 @@
+import { BarChart3, Clock, Target, Users } from "lucide-react"
 import type React from "react"
-import { TeamCard } from "../components/TeamCard"
 import { CrossTaskCard } from "../components/CrossTaskCard"
 import { NoTeamCard } from "../components/NoTeamCard"
-import { getProcessedData } from "../utils/dataProcessor"
-import { BarChart3, Users, Clock, Target } from "lucide-react"
+import { TeamCard } from "../components/TeamCard"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { useBacklogData } from "../contexts/BacklogContext"
+import { getCrossTeamTasks, getNoTeamTasks } from "../utils/backlogUtils"
 
 export const Dashboard: React.FC = () => {
-  const { teamStats, noTeamTasks, crossTeamTasks } = getProcessedData()
+  const { data, isLoading, error } = useBacklogData()
 
-  // Calculate overall statistics
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data) return <div>No data available</div>
+
+  // Используем готовые данные с бэка
+  const { teamStats } = data
+  const crossTeamTasks = getCrossTeamTasks(data)
+  const noTeamTasks = getNoTeamTasks(data)
+
+  // Общая статистика из готовых данных
   const totalTasks = teamStats.reduce((sum, team) => sum + team.taskCount, 0)
   const totalSize = teamStats.reduce((sum, team) => sum + team.totalSize, 0)
   const totalTimeTracking = teamStats.reduce((sum, team) => sum + team.totalTimeTracking, 0)
-  const averageOverload =
-    teamStats.length > 0 ? teamStats.reduce((sum, team) => sum + team.overloadIndicator, 0) / teamStats.length : 0
+  const averageOverload = teamStats.length > 0 
+    ? teamStats.reduce((sum, team) => sum + team.overloadIndicator, 0) / teamStats.length 
+    : 0
 
   return (
     <div className="p-6 space-y-6">

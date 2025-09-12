@@ -1,17 +1,24 @@
 "use client"
 
 // Cross-team tasks detail page
+import { ArrowLeft, ArrowRightLeft, Building, User } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, ArrowRightLeft, User, Building } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
-import { getProcessedData } from "../utils/dataProcessor"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { useBacklogData } from "../contexts/BacklogContext"
+import { getCrossTeamTasks } from "../utils/backlogUtils"
 
 export const CrossTaskDetail: React.FC = () => {
   const navigate = useNavigate()
-  const { crossTeamTasks } = getProcessedData()
+  const { data, isLoading, error } = useBacklogData()
+  
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data) return <div>No data available</div>
+  
+  const crossTeamTasks = getCrossTeamTasks(data)
 
   const uniqueDevelopers = new Set(crossTeamTasks.map((task) => task.developer)).size
   const uniqueTeams = new Set(crossTeamTasks.map((task) => task.parentTeam)).size
