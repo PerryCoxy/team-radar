@@ -44,6 +44,7 @@ const DeveloperDetailContent: React.FC<DeveloperDetailContentProps> = ({ develop
   }
   
   const crossTeamTasks = getCrossTeamTasksByDeveloper(data, decodedDeveloperName)
+  const crossTeamTasksGrouped = developer.crossTeamTasksByParent || []
 
   return (
     <div className="p-6 space-y-6">
@@ -175,31 +176,69 @@ const DeveloperDetailContent: React.FC<DeveloperDetailContentProps> = ({ develop
           </div>
         )}
 
-        {/* Cross-Team Tasks */}
-        {crossTeamTasks.length > 0 && (
+        {/* Cross-Team Tasks with Accordion */}
+        {crossTeamTasksGrouped.length > 0 && (
           <div>
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Кросс-командные задачи ({crossTeamTasks.length})
             </h2>
-            <div className="space-y-3">
-              {crossTeamTasks.map((task: any) => (
-                <Card key={task.taskId} className="border-primary/20">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-foreground mb-2">{task.taskTitle}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">Родительская задача: {task.parentTitle}</p>
-                        <div className="flex gap-4 text-sm text-muted-foreground">
-                          <span>Команда проекта: {task.parentTeam}</span>
-                          <span>ID: {task.taskId}</span>
+            <Accordion type="multiple" className="w-full">
+              {crossTeamTasksGrouped.map((parentGroup: any) => (
+                <AccordionItem key={`cross-${parentGroup.parentId}`} value={`cross-${parentGroup.parentId}`}>
+                  <AccordionTrigger className="text-left hover:no-underline">
+                    <div className="flex items-start gap-3 w-full">
+                      <Badge variant={parentGroup.parentType === 'BUG' ? 'destructive' : parentGroup.parentType === 'EN' ? 'default' : 'secondary'}>
+                        {parentGroup.parentType}
+                      </Badge>
+                      <div className="flex-1 text-left space-y-2">
+                        <div className="font-medium">{parentGroup.parentTitle}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {parentGroup.parentTeam} • {parentGroup.tasks.length} задач
+                        </div>
+                        
+                        {/* Дополнительная информация в заголовке */}
+                        <div className="space-y-1">
+                          {/* Эксперт для EN/US */}
+                          {parentGroup.expert && parentGroup.expert.length > 0 && (
+                            <UserList users={parentGroup.expert} type="expert" className="text-xs" />
+                          )}
+                          
+                          {/* Тестировщик для BUG */}
+                          {parentGroup.tester && parentGroup.tester.length > 0 && (
+                            <UserList users={parentGroup.tester} type="tester" className="text-xs" />
+                          )}
+                          
+                          {/* Внешние исполнители */}
+                          {parentGroup.externalExecutors && parentGroup.externalExecutors.length > 0 && (
+                            <UserList users={parentGroup.externalExecutors} type="external" className="text-xs" />
+                          )}
                         </div>
                       </div>
-                      <Badge variant="outline">Кросс-командная</Badge>
+                      <Badge variant="outline" className="ml-2">Кросс-командная</Badge>
                     </div>
-                  </CardContent>
-                </Card>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 ml-4">
+                      {parentGroup.tasks.map((task: any) => (
+                        <Card key={task.taskId} className="border-l-4 border-l-orange-400/50">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-foreground mb-2">{task.taskTitle}</h4>
+                                <div className="flex gap-4 text-sm text-muted-foreground">
+                                  <span>Команда проекта: {task.parentTeam}</span>
+                                  <span>ID: {task.taskId}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         )}
       </div>

@@ -40,6 +40,19 @@ export interface CrossTeamTaskDto {
   parentTeam: string
 }
 
+// Группировка кросс-командных задач по родительской задаче
+export interface CrossTeamParentGroup {
+  parentId: number
+  parentTitle: string
+  parentType: 'EN' | 'US' | 'BUG'
+  parentTeam: string
+  tasks: CrossTeamTaskDto[]
+  // Дополнительная информация о родительской задаче
+  expert?: UserInfo[]
+  tester?: UserInfo[]
+  externalExecutors?: UserInfo[]
+}
+
 // Типы для категорий задач в команде
 export interface TeamTasks {
   EN: ParentDto[]
@@ -53,7 +66,8 @@ export interface BacklogResponse {
   groups: {
     teams: Record<string, TeamTasks>
     NO_TEAM: NoTeamTask[]
-    CROSS_TEAM: CrossTeamTaskDto[]
+    CROSS_TEAM: CrossTeamTaskDto[] // оставляем для совместимости
+    CROSS_TEAM_GROUPED: CrossTeamParentGroup[] // новая группированная структура
   }
   // Готовая статистика команд
   teamStats: TeamStats[]
@@ -107,6 +121,8 @@ export interface DeveloperStats {
   tasks: TaskDto[] // оставляем для обратной совместимости
   // Новая группировка задач по родительским задачам с типами
   tasksByParent: ParentTaskGroup[]
+  // Группированные кросс-командные задачи разработчика
+  crossTeamTasksByParent: CrossTeamParentGroup[]
 }
 
 // Типы для фильтрации и поиска

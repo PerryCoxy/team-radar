@@ -1,4 +1,4 @@
-import { BacklogResponse, CrossTeamTaskDto, NoTeamTask, ParentDto, TaskDto, TeamTasks } from '../types'
+import { BacklogResponse, CrossTeamParentGroup, CrossTeamTaskDto, NoTeamTask, ParentDto, TaskDto, TeamTasks } from '../types'
 
 // Получить данные команды по имени
 export const getTeamData = (data: BacklogResponse, teamName: string): TeamTasks | undefined => {
@@ -59,14 +59,32 @@ export const getDeveloperTasks = (data: BacklogResponse, developerName: string):
   return allSubTasks
 }
 
-// Получить кросс-командные задачи
+// Получить кросс-командные задачи (старый формат)
 export const getCrossTeamTasks = (data: BacklogResponse): CrossTeamTaskDto[] => {
   return data.groups.CROSS_TEAM
+}
+
+// Получить группированные кросс-командные задачи
+export const getCrossTeamTasksGrouped = (data: BacklogResponse): CrossTeamParentGroup[] => {
+  return data.groups.CROSS_TEAM_GROUPED || []
 }
 
 // Получить кросс-командные задачи разработчика
 export const getCrossTeamTasksByDeveloper = (data: BacklogResponse, developerName: string): CrossTeamTaskDto[] => {
   return data.groups.CROSS_TEAM.filter(task => task.developer === developerName)
+}
+
+// Получить группированные кросс-командные задачи разработчика
+export const getCrossTeamTasksByDeveloperGrouped = (data: BacklogResponse, developerName: string): CrossTeamParentGroup[] => {
+  const allGrouped = getCrossTeamTasksGrouped(data)
+  
+  // Фильтруем группы, оставляя только те, где есть задачи данного разработчика
+  return allGrouped
+    .map(group => ({
+      ...group,
+      tasks: group.tasks.filter(task => task.developer === developerName)
+    }))
+    .filter(group => group.tasks.length > 0)
 }
 
 // Получить задачи без команды
