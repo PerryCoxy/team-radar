@@ -1,4 +1,3 @@
-"use client"
 
 // Team card component displaying team statistics and workload
 import { Clock, Target, TrendingUp } from "lucide-react"

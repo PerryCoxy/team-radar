@@ -1,4 +1,3 @@
-"use client"
 
 // No team tasks detail page
 import { AlertTriangle, ArrowLeft, FileX } from "lucide-react"

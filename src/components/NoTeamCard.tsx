@@ -1,12 +1,11 @@
-"use client"
 
 // No team tasks card component
+import { AlertTriangle, FileX } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import { Badge } from "./ui/badge"
 import type { NoTeamTask } from "../types"
-import { AlertTriangle, FileX } from "lucide-react"
+import { Badge } from "./ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 
 interface NoTeamCardProps {
   tasks: NoTeamTask[]

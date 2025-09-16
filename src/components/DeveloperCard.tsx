@@ -1,4 +1,3 @@
-"use client"
 
 // Developer card component for team detail view
 import { User } from "lucide-react"

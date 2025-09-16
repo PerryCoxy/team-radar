@@ -1,4 +1,3 @@
-"use client"
 
 import { TestTube, User, Users } from "lucide-react"
 import type React from "react"

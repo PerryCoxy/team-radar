@@ -1,12 +1,11 @@
-"use client"
 
 // Cross-team task card component
+import { ArrowRightLeft, Building, User } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import { Badge } from "./ui/badge"
 import type { CrossTeamTaskDto } from "../types"
-import { ArrowRightLeft, User, Building } from "lucide-react"
+import { Badge } from "./ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 
 interface CrossTaskCardProps {
   tasks: CrossTeamTaskDto[]

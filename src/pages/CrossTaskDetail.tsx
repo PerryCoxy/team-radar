@@ -1,4 +1,3 @@
-"use client"
 
 // Cross-team tasks detail page
 import { ArrowLeft, ArrowRightLeft, Building, User } from "lucide-react"

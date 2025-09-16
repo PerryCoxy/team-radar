@@ -1,27 +1,36 @@
-"use client"
-
 // Developer detail page showing individual tasks and workload
-import { ArrowLeft, Clock, Target, TrendingUp, User } from "lucide-react"
+import { Clock, Target, TrendingUp, User } from "lucide-react"
 import type React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
+import { LoadingWrapper } from "../components/LoadingWrapper"
+import { PageHeader } from "../components/PageHeader"
+import { StatsCard } from "../components/StatsCard"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion"
 import { Badge } from "../components/ui/badge"
-import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
 import { UserList } from "../components/UserList"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasksByDeveloper } from "../utils/backlogUtils"
+import { getOverloadProgressColor, getOverloadVariant } from "../utils/overloadUtils"
 
 export const DeveloperDetail: React.FC = () => {
   const { developerName } = useParams<{ developerName: string }>()
-  const navigate = useNavigate()
   const { data, isLoading, error } = useBacklogData()
-  
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
-  if (!data) return <div>No data available</div>
 
+  return (
+    <LoadingWrapper isLoading={isLoading} error={error} data={data}>
+      <DeveloperDetailContent developerName={developerName} data={data} />
+    </LoadingWrapper>
+  )
+}
+
+interface DeveloperDetailContentProps {
+  developerName: string | undefined
+  data: any
+}
+
+const DeveloperDetailContent: React.FC<DeveloperDetailContentProps> = ({ developerName, data }) => {
   if (!developerName) {
     return <div>Разработчик не найден</div>
   }
@@ -29,73 +38,42 @@ export const DeveloperDetail: React.FC = () => {
   const decodedDeveloperName = decodeURIComponent(developerName)
   
   // Найти разработчика в готовых данных
-  const developer = data.developerStats.find(d => d.name === decodedDeveloperName)
+  const developer = data.developerStats.find((d: any) => d.name === decodedDeveloperName)
   if (!developer) {
     return <div>Разработчик не найден</div>
   }
   
   const crossTeamTasks = getCrossTeamTasksByDeveloper(data, decodedDeveloperName)
 
-  const getOverloadVariant = (indicator: number) => {
-    if (indicator <= 50) return "secondary"
-    if (indicator <= 80) return "default"
-    return "destructive"
-  }
-
-  const getOverloadColor = (indicator: number) => {
-    if (indicator <= 50) return "bg-green-500"
-    if (indicator <= 80) return "bg-yellow-500"
-    return "bg-red-500"
-  }
-
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <User className="h-8 w-8 text-primary" />
-            {developer.name}
-          </h1>
-          <p className="text-muted-foreground">Команда: {developer.team} • Детальная информация по задачам</p>
-        </div>
-      </div>
+      <PageHeader
+        title={developer.name}
+        subtitle={`Команда: ${developer.team} • Детальная информация по задачам`}
+        icon={<User className="h-8 w-8 text-primary" />}
+        backTo="/"
+      />
 
       {/* Developer Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Всего задач</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{developer.taskCount + crossTeamTasks.length}</div>
-            <p className="text-xs text-muted-foreground">+{crossTeamTasks.length} кросс-командных</p>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="Всего задач"
+          value={developer.taskCount + crossTeamTasks.length}
+          subtitle={`+${crossTeamTasks.length} кросс-командных`}
+          icon={Target}
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Общий размер</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{developer.totalSize}</div>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="Общий размер"
+          value={developer.totalSize}
+          icon={TrendingUp}
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Затрачено времени</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{developer.totalTimeTracking.toFixed(1)}ч</div>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="Затрачено времени"
+          value={`${developer.totalTimeTracking.toFixed(1)}ч`}
+          icon={Clock}
+        />
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -108,7 +86,7 @@ export const DeveloperDetail: React.FC = () => {
             <div className="relative">
               <Progress value={Math.min(developer.overloadIndicator, 100)} className="h-2" />
               <div
-                className={`absolute top-0 left-0 h-2 rounded-full transition-all ${getOverloadColor(developer.overloadIndicator)}`}
+                className={`absolute top-0 left-0 h-2 rounded-full transition-all ${getOverloadProgressColor(developer.overloadIndicator)}`}
                 style={{ width: `${Math.min(developer.overloadIndicator, 100)}%` }}
               />
             </div>
@@ -126,7 +104,7 @@ export const DeveloperDetail: React.FC = () => {
             </h2>
             <Accordion type="multiple" className="w-full">
               {/* Each parent task becomes an accordion item */}
-              {developer.tasksByParent.map((parentGroup) => (
+              {developer.tasksByParent.map((parentGroup: any) => (
                 <AccordionItem key={parentGroup.parentId} value={parentGroup.parentId.toString()}>
                   <AccordionTrigger className="text-left hover:no-underline">
                     <div className="flex items-start gap-3 w-full">
@@ -162,7 +140,7 @@ export const DeveloperDetail: React.FC = () => {
                   <AccordionContent>
                     <div className="space-y-3 ml-4">
                       {/* Подзадачи разработчика */}
-                      {parentGroup.tasks.map((task) => (
+                      {parentGroup.tasks.map((task: any) => (
                         <Card key={task.id} className="border-l-4 border-l-primary/30">
                           <CardContent className="p-4">
                             <div className="flex justify-between items-start gap-4">
@@ -175,7 +153,7 @@ export const DeveloperDetail: React.FC = () => {
                                 </div>
                                 {task.members && task.members.length > 0 && (
                                   <div className="mt-2 text-sm text-muted-foreground">
-                                    Исполнители: {task.members.map(m => m.full_name).join(', ')}
+                                    Исполнители: {task.members.map((m: any) => m.full_name).join(', ')}
                                   </div>
                                 )}
                               </div>
@@ -204,7 +182,7 @@ export const DeveloperDetail: React.FC = () => {
               Кросс-командные задачи ({crossTeamTasks.length})
             </h2>
             <div className="space-y-3">
-              {crossTeamTasks.map((task) => (
+              {crossTeamTasks.map((task: any) => (
                 <Card key={task.taskId} className="border-primary/20">
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start gap-4">
