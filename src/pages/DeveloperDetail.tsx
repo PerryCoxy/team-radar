@@ -4,10 +4,12 @@
 import { ArrowLeft, Clock, Target, TrendingUp, User } from "lucide-react"
 import type React from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
+import { UserList } from "../components/UserList"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasksByDeveloper } from "../utils/backlogUtils"
 
@@ -114,36 +116,86 @@ export const DeveloperDetail: React.FC = () => {
         </Card>
       </div>
 
-      {/* Tasks List */}
+      {/* Tasks List with Accordion */}
       <div className="space-y-6">
-        {/* Regular Tasks */}
-        <div>
-          <h2 className="text-xl font-semibold text-foreground mb-4">Задачи команды ({developer.tasks.length})</h2>
-          <div className="space-y-3">
-            {developer.tasks.map((task) => (
-              <Card key={task.id}>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground mb-2">{task.title}</h3>
-                      <div className="flex gap-4 text-sm text-muted-foreground">
-                        <span>Размер: {task.size}</span>
-                        <span>Затрачено: {task.time_tracking}ч</span>
-                        <span>ID: {task.id}</span>
+        {/* Tasks grouped by Parent Task */}
+        {developer.tasksByParent && developer.tasksByParent.length > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold text-foreground mb-4">
+              Задачи команды ({developer.tasks.length})
+            </h2>
+            <Accordion type="multiple" className="w-full">
+              {/* Each parent task becomes an accordion item */}
+              {developer.tasksByParent.map((parentGroup) => (
+                <AccordionItem key={parentGroup.parentId} value={parentGroup.parentId.toString()}>
+                  <AccordionTrigger className="text-left hover:no-underline">
+                    <div className="flex items-start gap-3 w-full">
+                      <Badge variant={parentGroup.parentType === 'BUG' ? 'destructive' : parentGroup.parentType === 'EN' ? 'default' : 'secondary'}>
+                        {parentGroup.parentType}
+                      </Badge>
+                      <div className="flex-1 text-left space-y-2">
+                        <div className="font-medium">{parentGroup.parentTitle}</div>
+                        <div className="text-sm text-muted-foreground">
+                          ID: {parentGroup.parentId} • {parentGroup.tasks.length} подзадач
+                        </div>
+                        
+                        {/* Дополнительная информация в заголовке */}
+                        <div className="space-y-1">
+                          {/* Эксперт для EN/US */}
+                          {parentGroup.expert && (
+                            <UserList users={parentGroup.expert} type="expert" className="text-xs" />
+                          )}
+                          
+                          {/* Тестировщик для BUG */}
+                          {parentGroup.tester && (
+                            <UserList users={parentGroup.tester} type="tester" className="text-xs" />
+                          )}
+                          
+                          {/* Внешние исполнители */}
+                          {parentGroup.externalExecutors && (
+                            <UserList users={parentGroup.externalExecutors} type="external" className="text-xs" />
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">Прогресс</div>
-                      <div className="text-lg font-semibold text-foreground">
-                        {task.size > 0 ? Math.round((task.time_tracking / task.size) * 100) : 0}%
-                      </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 ml-4">
+                      {/* Подзадачи разработчика */}
+                      {parentGroup.tasks.map((task) => (
+                        <Card key={task.id} className="border-l-4 border-l-primary/30">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-foreground mb-2">{task.title}</h4>
+                                <div className="flex gap-4 text-sm text-muted-foreground">
+                                  <span>Размер: {task.size}</span>
+                                  <span>Затрачено: {task.time_tracking}ч</span>
+                                  <span>ID: {task.id}</span>
+                                </div>
+                                {task.members && task.members.length > 0 && (
+                                  <div className="mt-2 text-sm text-muted-foreground">
+                                    Исполнители: {task.members.map(m => m.full_name).join(', ')}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-right">
+                                <div className="text-sm text-muted-foreground">Прогресс</div>
+                                <div className="text-lg font-semibold text-foreground">
+                                  {task.size > 0 ? Math.round((task.time_tracking / task.size) * 100) : 0}%
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
-        </div>
+        )}
 
         {/* Cross-Team Tasks */}
         {crossTeamTasks.length > 0 && (

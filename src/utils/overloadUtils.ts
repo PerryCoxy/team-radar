@@ -16,3 +16,4 @@ export const formatOverloadIndicator = (indicator: number): string => {
   return `${Math.round(indicator)}%`
 }
 
+

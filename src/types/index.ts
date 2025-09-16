@@ -75,6 +75,27 @@ export interface TeamStats {
   bugTasks: ParentDto[]
 }
 
+// Дополнительная информация о пользователе
+export interface UserInfo {
+  id: number
+  uid: string
+  full_name: string
+  email: string
+  username: string
+}
+
+// Группировка задач по родительской задаче
+export interface ParentTaskGroup {
+  parentId: number
+  parentTitle: string
+  parentType: 'EN' | 'US' | 'BUG'
+  tasks: TaskDto[]
+  // Дополнительная информация в зависимости от типа
+  expert?: UserInfo[] // для EN/US - эксперт
+  tester?: UserInfo[] // для BUG - тестировщик
+  externalExecutors?: UserInfo[] // исполнители из других команд (без текущего разработчика)
+}
+
 // Обработанные данные для UI - статистика разработчика
 export interface DeveloperStats {
   name: string
@@ -83,7 +104,9 @@ export interface DeveloperStats {
   totalSize: number
   totalTimeTracking: number
   overloadIndicator: number
-  tasks: TaskDto[]
+  tasks: TaskDto[] // оставляем для обратной совместимости
+  // Новая группировка задач по родительским задачам с типами
+  tasksByParent: ParentTaskGroup[]
 }
 
 // Типы для фильтрации и поиска
