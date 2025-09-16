@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom"
+import { CommandPalette } from "./components/CommandPalette"
 import { Sidebar } from "./components/Sidebar"
 import { BacklogProvider, useBacklogData } from './contexts/BacklogContext'
 import { SprintProvider } from './contexts/SprintContext'
+import { useCommandPalette } from './hooks/useCommandPalette'
 import { CrossTaskDetail } from "./pages/CrossTaskDetail"
 import { Dashboard } from "./pages/Dashboard"
 import { DeveloperDetail } from "./pages/DeveloperDetail"
@@ -13,6 +15,7 @@ import { TeamDetail } from "./pages/TeamDetail"
 
 function AppContent() {
   const { isLoading, error } = useBacklogData();
+  const { open, setOpen } = useCommandPalette();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading backlog</div>;
@@ -35,6 +38,9 @@ function AppContent() {
           <Route path="/search" element={<Search />} />
         </Routes>
       </main>
+
+      {/* Global Command Palette */}
+      <CommandPalette open={open} onOpenChange={setOpen} />
     </div>
   )
 }
