@@ -4,6 +4,7 @@ import { Clock, Target, TrendingUp } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
 import { TeamStats } from "../types"
+import { formatSize, formatTime } from "../utils/formatUtils"
 import { getOverloadVariant } from "../utils/overloadUtils"
 import { OverloadProgressBar } from "./OverloadProgressBar"
 import { StatsGrid } from "./StatsGrid"
@@ -41,8 +42,8 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
         <StatsGrid 
           stats={[
             { label: "Задач", value: team.taskCount, icon: Target },
-            { label: "Размер", value: team.totalSize, icon: TrendingUp },
-            { label: "Затрачено времени", value: `${team.totalTimeTracking.toFixed(1)}ч`, icon: Clock }
+            { label: "Размер", value: formatSize(team.totalSize), icon: TrendingUp },
+            { label: "Затрачено времени", value: formatTime(team.totalTimeTracking), icon: Clock }
           ]}
           columns={2}
         />

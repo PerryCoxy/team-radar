@@ -12,6 +12,7 @@ import { Progress } from "../components/ui/progress"
 import { UserList } from "../components/UserList"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasksByDeveloper } from "../utils/backlogUtils"
+import { formatSize, formatTime } from "../utils/formatUtils"
 import { getOverloadProgressColor, getOverloadVariant } from "../utils/overloadUtils"
 
 export const DeveloperDetail: React.FC = () => {
@@ -66,13 +67,13 @@ const DeveloperDetailContent: React.FC<DeveloperDetailContentProps> = ({ develop
 
         <StatsCard
           title="Общий размер"
-          value={developer.totalSize}
+          value={formatSize(developer.totalSize)}
           icon={TrendingUp}
         />
 
         <StatsCard
           title="Затрачено времени"
-          value={`${developer.totalTimeTracking.toFixed(1)}ч`}
+          value={formatTime(developer.totalTimeTracking)}
           icon={Clock}
         />
 

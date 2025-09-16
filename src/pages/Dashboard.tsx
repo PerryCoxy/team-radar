@@ -6,9 +6,11 @@ import { StatCard } from "../components/StatCard"
 import { TeamCard } from "../components/TeamCard"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasks, getNoTeamTasks } from "../utils/backlogUtils"
+import { formatSize, formatTime } from "../utils/formatUtils"
 
 export const Dashboard: React.FC = () => {
   const { data, isLoading, error, selectedSprint } = useBacklogData()
+  console.log("🚀 ###  ~ Dashboard.tsx:12 ~ Dashboard ~ data:", data);
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
@@ -44,12 +46,12 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard
           title="Общий размер"
-          value={totalSize}
+          value={formatSize(totalSize)}
           icon={BarChart3}
         />
         <StatCard
           title="Затрачено времени"
-          value={`${totalTimeTracking.toFixed(1)}ч`}
+          value={formatTime(totalTimeTracking)}
           icon={Clock}
         />
         <StatCard

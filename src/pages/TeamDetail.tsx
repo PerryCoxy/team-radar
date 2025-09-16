@@ -8,6 +8,7 @@ import { PageHeader } from "../components/PageHeader"
 import { Badge } from "../components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { useBacklogData } from "../contexts/BacklogContext"
+import { formatSize, formatTime } from "../utils/formatUtils"
 import { getOverloadVariant } from "../utils/overloadUtils"
 
 export const TeamDetail: React.FC = () => {
@@ -69,7 +70,7 @@ const TeamDetailContent: React.FC<TeamDetailContentProps> = ({ teamName, data })
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{team.totalSize}</div>
+            <div className="text-2xl font-bold text-foreground">{formatSize(team.totalSize)}</div>
           </CardContent>
         </Card>
 
@@ -79,7 +80,7 @@ const TeamDetailContent: React.FC<TeamDetailContentProps> = ({ teamName, data })
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{team.totalTimeTracking.toFixed(1)}ч</div>
+            <div className="text-2xl font-bold text-foreground">{formatTime(team.totalTimeTracking)}</div>
           </CardContent>
         </Card>
 
