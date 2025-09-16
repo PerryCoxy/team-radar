@@ -1,12 +1,12 @@
 "use client"
 
 // Cross-team task card component
-import { ArrowRightLeft, Building, User } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import type { CrossTeamTaskDto } from "../types"
-import { Badge } from "./ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import { Badge } from "./ui/badge"
+import type { CrossTeamTaskDto } from "../types"
+import { ArrowRightLeft, User, Building } from "lucide-react"
 
 interface CrossTaskCardProps {
   tasks: CrossTeamTaskDto[]
@@ -24,7 +24,7 @@ export const CrossTaskCard: React.FC<CrossTaskCardProps> = ({ tasks }) => {
 
   return (
     <Card
-      className="cursor-pointer card-hover border-enhanced card-gradient card-gradient-hover"
+      className="cursor-pointer transition-all hover:shadow-lg hover:scale-105 border-border bg-gradient-to-br from-card to-accent/10"
       onClick={handleClick}
     >
       <CardHeader className="pb-3">

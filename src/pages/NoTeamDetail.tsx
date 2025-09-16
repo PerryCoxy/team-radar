@@ -8,17 +8,12 @@ import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { useBacklogData } from "../contexts/BacklogContext"
-import { getNoTeamTasks } from "../utils/backlogUtils"
+import type { NoTeamTask } from "../types"
 
 export const NoTeamDetail: React.FC = () => {
   const navigate = useNavigate()
-  const { data, isLoading, error } = useBacklogData()
-  
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
-  if (!data) return <div>No data available</div>
-  
-  const noTeamTasks = getNoTeamTasks(data)
+  const { data } = useBacklogData()
+  const noTeamTasks = data?.groups.NO_TEAM || []
 
   return (
     <div className="p-6 space-y-6">
@@ -65,8 +60,8 @@ export const NoTeamDetail: React.FC = () => {
           Список неназначенных задач ({noTeamTasks.length})
         </h2>
         <div className="space-y-3">
-          {noTeamTasks.map((task) => (
-            <Card key={task.id} className="border-enhanced card-gradient">
+          {noTeamTasks.map((task: NoTeamTask) => (
+            <Card key={task.id} className="border-destructive/20">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
@@ -76,7 +71,7 @@ export const NoTeamDetail: React.FC = () => {
                       <span>Команда: {task.team}</span>
                     </div>
                   </div>
-                  <Badge variant="destructive" className="badge-enhanced">Без команды</Badge>
+                  <Badge variant="destructive">Без команды</Badge>
                 </div>
               </CardContent>
             </Card>

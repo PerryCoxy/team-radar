@@ -15,3 +15,4 @@ export const getOverloadVariant = (indicator: number): "secondary" | "default" |
 export const formatOverloadIndicator = (indicator: number): string => {
   return `${Math.round(indicator)}%`
 }
+

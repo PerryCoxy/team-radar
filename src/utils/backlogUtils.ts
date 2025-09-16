@@ -78,3 +78,4 @@ export const getNoTeamTasks = (data: BacklogResponse): NoTeamTask[] => {
 export const getSprintId = (data: BacklogResponse): number => {
   return data.sprint_id
 }
+

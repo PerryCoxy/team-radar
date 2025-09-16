@@ -1,12 +1,12 @@
 "use client"
 
 // No team tasks card component
-import { AlertTriangle, FileX } from "lucide-react"
 import type React from "react"
 import { useNavigate } from "react-router-dom"
-import type { NoTeamTask } from "../types"
-import { Badge } from "./ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import { Badge } from "./ui/badge"
+import type { NoTeamTask } from "../types"
+import { AlertTriangle, FileX } from "lucide-react"
 
 interface NoTeamCardProps {
   tasks: NoTeamTask[]
@@ -21,7 +21,7 @@ export const NoTeamCard: React.FC<NoTeamCardProps> = ({ tasks }) => {
 
   return (
     <Card
-      className="cursor-pointer card-hover border-enhanced card-gradient card-gradient-hover"
+      className="cursor-pointer transition-all hover:shadow-lg hover:scale-105 border-border bg-gradient-to-br from-card to-destructive/10"
       onClick={handleClick}
     >
       <CardHeader className="pb-3">
