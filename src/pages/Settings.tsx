@@ -1,5 +1,6 @@
 import type React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { ThemeSelector } from "../components/ui/ThemeSelector"
 
 export const Settings: React.FC = () => {
   return (
@@ -10,6 +11,9 @@ export const Settings: React.FC = () => {
       </div>
 
       <div className="grid gap-6">
+        {/* Селектор тем */}
+        <ThemeSelector />
+
         <Card>
           <CardHeader>
             <CardTitle>Управление командами</CardTitle>

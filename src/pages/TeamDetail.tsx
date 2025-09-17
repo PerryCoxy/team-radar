@@ -99,7 +99,7 @@ const TeamDetailContent: React.FC<TeamDetailContentProps> = ({ teamName, data })
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-4">Разработчики команды ({teamDevelopers.length})</h2>
         {teamDevelopers.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {teamDevelopers.map((developer: any) => (
               <DeveloperCard key={developer.name} developer={developer} />
             ))}

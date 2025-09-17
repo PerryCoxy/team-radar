@@ -28,16 +28,16 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
       className="cursor-pointer card-hover border-enhanced card-gradient card-gradient-hover"
       onClick={handleClick}
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-foreground text-balance">{team.name}</CardTitle>
-          <Badge variant={getOverloadVariant(team.overloadIndicator)} className="font-medium badge-enhanced">
+          <CardTitle className="text-base font-semibold text-foreground text-balance">{team.name}</CardTitle>
+          <Badge variant={getOverloadVariant(team.overloadIndicator)} className="font-medium badge-enhanced text-xs">
             {Math.round(team.overloadIndicator)}%
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {/* Statistics Grid */}
         <StatsGrid 
           stats={[

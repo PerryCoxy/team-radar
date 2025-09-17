@@ -4,6 +4,7 @@ import { CrossTaskCard } from "../components/CrossTaskCard"
 import { NoTeamCard } from "../components/NoTeamCard"
 import { StatCard } from "../components/StatCard"
 import { TeamCard } from "../components/TeamCard"
+import { Loader } from "../components/ui/Loader"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasks, getNoTeamTasks } from "../utils/backlogUtils"
 import { formatSize, formatTime } from "../utils/formatUtils"
@@ -12,8 +13,15 @@ export const Dashboard: React.FC = () => {
   const { data, isLoading, error, selectedSprint } = useBacklogData()
   console.log("🚀 ###  ~ Dashboard.tsx:12 ~ Dashboard ~ data:", data);
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <Loader text="Загружаем данные команд..." size="lg" />
+  if (error) return (
+    <div className="p-6 flex items-center justify-center min-h-[400px]">
+      <div className="text-center">
+        <h2 className="text-xl font-semibold text-destructive mb-2">Ошибка загрузки</h2>
+        <p className="text-muted-foreground">{error.message}</p>
+      </div>
+    </div>
+  )
   if (!data) return <div>No data available</div>
 
   // Используем готовые данные с бэка
@@ -64,7 +72,7 @@ export const Dashboard: React.FC = () => {
       {/* Team Cards Grid */}
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-4">Команды</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {teamStats.map((team) => (
             <TeamCard key={team.name} team={team} />
           ))}
@@ -74,7 +82,7 @@ export const Dashboard: React.FC = () => {
       {/* Special Cards */}
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-4">Специальные категории</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {crossTeamTasks.length > 0 && <CrossTaskCard tasks={crossTeamTasks} />}
           {noTeamTasks.length > 0 && <NoTeamCard tasks={noTeamTasks} />}
         </div>
