@@ -20,6 +20,14 @@ export interface ParentDto {
   title: string
   team: string
   tasks?: TaskDto[]
+  // Информация о переносах между спринтами
+  sprintTransfers?: number
+  transferHistory?: {
+    date: string
+    fromSprint: number
+    toSprint: number
+    author: string
+  }[]
 }
 
 // Тип для задач без команды

@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext } from 'react'
-import { useBacklog } from '../hooks/useBacklog'
+import { useBacklogWithTransfers } from '../hooks/useBacklog'
 import { BacklogResponse } from '../types'
 import { useSprint } from './SprintContext'
 
@@ -19,7 +19,7 @@ interface BacklogProviderProps {
 
 export const BacklogProvider: React.FC<BacklogProviderProps> = ({ children }) => {
   const { selectedSprint } = useSprint()
-  const { data, isLoading, error, refetch } = useBacklog(selectedSprint)
+  const { data, isLoading, error, refetch } = useBacklogWithTransfers(selectedSprint)
 
   const value: BacklogContextType = {
     data,

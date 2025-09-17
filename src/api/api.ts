@@ -11,3 +11,8 @@ export const fetchBacklog = async (sprint: number): Promise<BacklogResponse> => 
   const res = await api.get(`/backlog?sprint=${sprint}`);
   return res.data;
 };
+
+export const fetchBacklogWithTransfers = async (sprint: number): Promise<BacklogResponse> => {
+  const res = await api.get(`/backlog/with-transfers?sprint=${sprint}`);
+  return res.data;
+};

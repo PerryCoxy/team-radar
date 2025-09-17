@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import { Badge } from "../components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
+import { SprintTransferBadge } from "../components/ui/SprintTransferBadge"
 import { UserList } from "../components/UserList"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasksByDeveloper } from "../utils/backlogUtils"
@@ -115,8 +116,15 @@ const DeveloperDetailContent: React.FC<DeveloperDetailContentProps> = ({ develop
                       </Badge>
                       <div className="flex-1 text-left space-y-2">
                         <div className="font-medium">{parentGroup.parentTitle}</div>
-                        <div className="text-sm text-muted-foreground">
-                          ID: {parentGroup.parentId} • {parentGroup.tasks.length} подзадач
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>ID: {parentGroup.parentId} • {parentGroup.tasks.length} подзадач</span>
+                          {parentGroup.sprintTransfers !== undefined && (
+                            <SprintTransferBadge 
+                              transferCount={parentGroup.sprintTransfers}
+                              transferHistory={parentGroup.transferHistory}
+                              cardTitle={parentGroup.parentTitle}
+                            />
+                          )}
                         </div>
                         
                         {/* Дополнительная информация в заголовке */}

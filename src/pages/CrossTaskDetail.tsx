@@ -7,6 +7,7 @@ import { PageHeader } from "../components/PageHeader"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion"
 import { Badge } from "../components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { SprintTransferBadge } from "../components/ui/SprintTransferBadge"
 import { UserList } from "../components/UserList"
 import { useBacklogData } from "../contexts/BacklogContext"
 import { getCrossTeamTasksGrouped } from "../utils/backlogUtils"
@@ -90,8 +91,15 @@ const CrossTaskDetailContent: React.FC<CrossTaskDetailContentProps> = ({ data })
                   </Badge>
                   <div className="flex-1 text-left space-y-2">
                     <div className="font-medium">{parentGroup.parentTitle}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {parentGroup.parentTeam} • {parentGroup.tasks.length} задач
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>{parentGroup.parentTeam} • {parentGroup.tasks.length} задач</span>
+                      {parentGroup.sprintTransfers !== undefined && (
+                        <SprintTransferBadge 
+                          transferCount={parentGroup.sprintTransfers}
+                          transferHistory={parentGroup.transferHistory}
+                          cardTitle={parentGroup.parentTitle}
+                        />
+                      )}
                     </div>
                     
                     {/* Дополнительная информация в заголовке */}
