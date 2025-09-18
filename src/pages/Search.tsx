@@ -32,6 +32,30 @@ interface SearchContentProps {
 }
 
 const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSearchTerm }) => {
+  const [os, setOs] = useState<'mac' | 'windows' | 'other'>('other');
+
+  useState(() => {
+      const userAgent = navigator.userAgent;
+
+      if (userAgent.includes('Mac')) {
+        setOs('mac');
+      } else if (userAgent.includes('Win')) {
+        setOs('windows');
+      } else {
+        setOs('other');
+      }
+    });
+
+    const getHintText = () => {
+      switch (os) {
+        case 'mac':
+          return 'Нажмите Cmd+K для быстрого поиска';
+        case 'windows':
+          return 'Нажмите Ctrl+K для быстрого поиска';
+        default:
+          return 'Нажмите Ctrl/Cmd+K для быстрого поиска';
+      }
+    };
   // Настройка Fuse.js для мягкого поиска
   const developersFuse = useMemo(() => new Fuse(data.developerStats, {
     keys: ['name'],
@@ -145,7 +169,7 @@ const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSear
             </p>
             <Badge variant="outline" className="gap-1">
               <Keyboard className="h-3 w-3" />
-              Нажмите Cmd+K для быстрого поиска
+              {getHintText()}
             </Badge>
           </CardContent>
         </Card>
