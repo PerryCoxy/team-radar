@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { useBacklogData } from "../contexts/BacklogContext"
 import type { DeveloperStats, TeamStats } from "../types"
+import { OSType, OS_QUICK_SEARCH_HINTS, detectOS } from "../constants/os-detection"
 
 export const Search: React.FC = () => {
   const { data, isLoading, error } = useBacklogData()
@@ -32,30 +33,11 @@ interface SearchContentProps {
 }
 
 const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSearchTerm }) => {
-  const [os, setOs] = useState<'mac' | 'windows' | 'other'>('other');
+const [os, setOs] = useState<OSType>('other');
 
   useState(() => {
-      const userAgent = navigator.userAgent;
-
-      if (userAgent.includes('Mac')) {
-        setOs('mac');
-      } else if (userAgent.includes('Win')) {
-        setOs('windows');
-      } else {
-        setOs('other');
-      }
-    });
-
-    const getHintText = () => {
-      switch (os) {
-        case 'mac':
-          return 'Нажмите Cmd+K для быстрого поиска';
-        case 'windows':
-          return 'Нажмите Ctrl+K для быстрого поиска';
-        default:
-          return 'Нажмите Ctrl/Cmd+K для быстрого поиска';
-      }
-    };
+    setOs(detectOS());
+  });
   // Настройка Fuse.js для мягкого поиска
   const developersFuse = useMemo(() => new Fuse(data.developerStats, {
     keys: ['name'],
@@ -169,7 +151,7 @@ const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSear
             </p>
             <Badge variant="outline" className="gap-1">
               <Keyboard className="h-3 w-3" />
-              {getHintText()}
+              {OS_QUICK_SEARCH_HINTS[os]}
             </Badge>
           </CardContent>
         </Card>
