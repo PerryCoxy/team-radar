@@ -1,7 +1,7 @@
 import Fuse from "fuse.js"
 import { Keyboard, Search as SearchIcon, User, Users } from "lucide-react"
 import type React from "react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { DeveloperCard } from "../components/DeveloperCard"
 import { LoadingWrapper } from "../components/LoadingWrapper"
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { useBacklogData } from "../contexts/BacklogContext"
 import type { DeveloperStats, TeamStats } from "../types"
+import { OSType, OS_QUICK_SEARCH_HINTS, detectOS } from "../constants/os-detection"
 
 export const Search: React.FC = () => {
   const { data, isLoading, error } = useBacklogData()
@@ -32,6 +33,11 @@ interface SearchContentProps {
 }
 
 const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSearchTerm }) => {
+const [os, setOs] = useState<OSType>('other');
+
+  useEffect(() => {
+    setOs(detectOS());
+  });
   // Настройка Fuse.js для мягкого поиска
   const developersFuse = useMemo(() => new Fuse(data.developerStats, {
     keys: ['name'],
@@ -145,7 +151,7 @@ const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSear
             </p>
             <Badge variant="outline" className="gap-1">
               <Keyboard className="h-3 w-3" />
-              Нажмите Cmd+K для быстрого поиска
+              {OS_QUICK_SEARCH_HINTS[os]}
             </Badge>
           </CardContent>
         </Card>
