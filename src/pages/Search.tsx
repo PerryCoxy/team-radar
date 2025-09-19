@@ -1,7 +1,7 @@
 import Fuse from "fuse.js"
 import { Keyboard, Search as SearchIcon, User, Users } from "lucide-react"
 import type React from "react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { DeveloperCard } from "../components/DeveloperCard"
 import { LoadingWrapper } from "../components/LoadingWrapper"
@@ -35,7 +35,7 @@ interface SearchContentProps {
 const SearchContent: React.FC<SearchContentProps> = ({ data, searchTerm, setSearchTerm }) => {
 const [os, setOs] = useState<OSType>('other');
 
-  useState(() => {
+  useEffect(() => {
     setOs(detectOS());
   });
   // Настройка Fuse.js для мягкого поиска
